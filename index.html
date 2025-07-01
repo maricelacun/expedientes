@@ -7,15 +7,397 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
-        /* Estilos anteriores se mantienen igual */
+        :root {
+            --primary: #1565C0;
+            --secondary: #2196F3;
+            --accent: #FFC107;
+            --light: #E3F2FD;
+            --dark: #0D47A1;
+            --success: #4CAF50;
+            --danger: #F44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.5rem 2rem;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-weight: 300;
+            opacity: 0.9;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            background-color: var(--light);
+            border-bottom: 1px solid #BBDEFB;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-save {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-excel {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .content {
+            display: flex;
+            min-height: 500px;
+        }
+        
+        .student-list {
+            width: 300px;
+            background-color: var(--light);
+            padding: 1rem;
+            border-right: 1px solid #BBDEFB;
+            overflow-y: auto;
+        }
+        
+        .student-list select {
+            width: 100%;
+            height: 100%;
+            padding: 0.5rem;
+            border: 2px solid var(--secondary);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background-color: white;
+        }
+        
+        .notes-container {
+            flex: 1;
+            padding: 1rem;
+            overflow-x: auto;
+        }
+        
+        .notes-form {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+        }
+        
+        .student-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--accent);
+        }
+        
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .note-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .note-item label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .note-item input {
+            padding: 0.75rem;
+            border: 1px solid #BBDEFB;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        
+        .observations {
+            margin-top: 1.5rem;
+        }
+        
+        .observations label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .observations textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #BBDEFB;
+            border-radius: 6px;
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: var(--light);
+            color: var(--dark);
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            .student-list {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #BBDEFB;
+                height: 200px;
+            }
+            .notes-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Todo el contenido HTML anterior se mantiene igual -->
-    
+    <div class="container">
+        <header>
+            <h1>Registro de Notas Estudiantiles</h1>
+            <p class="subtitle">Sistema de seguimiento académico</p>
+        </header>
+        
+        <div class="controls">
+            <button id="saveData" class="btn btn-save">
+                💾 Guardar Datos
+            </button>
+            <button id="exportExcel" class="btn btn-excel">
+                📊 Exportar a Excel
+            </button>
+        </div>
+        
+        <div class="content">
+            <div class="student-list">
+                <select id="studentSelect" size="20">
+                    <option value="0">AGILA GUTIERREZ BRITTANY PAOLA</option>
+                    <option value="1">CAMACHO RODRIGUEZ LUZ MARIA</option>
+                    <option value="2">CASTILLO SARITAMA LUIS ALEXANDER</option>
+                    <option value="3">CRUZ VELASCO STEFANIE YULIANA</option>
+                    <option value="4">CUENCA CALVA YUSELLY DAYANNA</option>
+                    <option value="5">ESPINOZA AREVALO ERICKA DAYANNA</option>
+                    <option value="6">ESPINOZA CASTILLO JEFFERSON ROLANDO</option>
+                    <option value="7">GUARNIZO SARANGO XIOMARA PAULETTE</option>
+                    <option value="8">GUTIERREZ RAMON AXEL XAVIER</option>
+                    <option value="9">JARAMILLO MORALES XIMENA KAROLINA</option>
+                    <option value="10">JUMBO SARANGO JEFFERSON VICENTE</option>
+                    <option value="11">LIANG FAREZ BAO YU</option>
+                    <option value="12">MANZANO RAMIREZ GABRIELA ALEXANDRA</option>
+                    <option value="13">MASAPANTA FLORES VICTOR MANUEL</option>
+                    <option value="14">MAZA CHUYA EMILY GABRIELA</option>
+                    <option value="15">MEDINA SANCHEZ CRISTOPHER ADRIAN</option>
+                    <option value="16">MENDOZA MANZANO KEVIN MANUEL</option>
+                    <option value="17">NAZARENO NAZARENO ALEXANDRA NOEMI</option>
+                    <option value="18">ORDOÑEZ BELTRAN ANGELA EUNICE</option>
+                    <option value="19">REYES BEDOYA MARIA ISABEL</option>
+                    <option value="20">RODRIGUEZ ROMERO ELVIS DANIEL</option>
+                    <option value="21">ROMERO JIMENEZ GRACIELA MERCEDES</option>
+                    <option value="22">SANCHEZ ORDOÑEZ FELIX ADOLFO</option>
+                    <option value="23">SARANGO NARVAEZ DILAN JOSUE</option>
+                    <option value="24">VIVANCO SARITAMA JENNER ANDRY</option>
+                    <option value="25">ZUMBA ESPINOZA LUIS FERNANDO</option>
+                </select>
+            </div>
+            
+            <div class="notes-container">
+                <div class="notes-form">
+                    <div class="student-name" id="currentStudent">Seleccione un estudiante</div>
+                    
+                    <div class="notes-grid">
+                        <div class="note-item">
+                            <label>5to</label>
+                            <input type="text" id="note1" placeholder="Ej. 8.5">
+                        </div>
+                        <div class="note-item">
+                            <label>6to</label>
+                            <input type="text" id="note2" placeholder="Ej. 7.25">
+                        </div>
+                        <div class="note-item">
+                            <label>7mo</label>
+                            <input type="text" id="note3" placeholder="Ej. 9.0">
+                        </div>
+                        <div class="note-item">
+                            <label>8vo</label>
+                            <input type="text" id="note4" placeholder="Ej. 8.75">
+                        </div>
+                        <div class="note-item">
+                            <label>9no</label>
+                            <input type="text" id="note5" placeholder="Ej. 10.0">
+                        </div>
+                        <div class="note-item">
+                            <label>10mo</label>
+                            <input type="text" id="note6" placeholder="Ej. 7.8">
+                        </div>
+                        <div class="note-item">
+                            <label>1ero</label>
+                            <input type="text" id="note7" placeholder="Ej. 8.37">
+                        </div>
+                        <div class="note-item">
+                            <label>2do</label>
+                            <input type="text" id="note8" placeholder="Ej. 9.5">
+                        </div>
+                        <div class="note-item">
+                            <label>3ero</label>
+                            <input type="text" id="note9" placeholder="Ej. 7.0">
+                        </div>
+                        <div class="note-item">
+                            <label>PPE</label>
+                            <input type="text" id="note10" placeholder="Ej. 8.9">
+                        </div>
+                    </div>
+                    
+                    <div class="observations">
+                        <label>Observación</label>
+                        <textarea id="observations" placeholder="Escriba aquí sus observaciones..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            Sistema de registro académico © 2023
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Todo el código anterior se mantiene igual hasta la función de exportación
+            // Datos de estudiantes
+            const students = [
+                "AGILA GUTIERREZ BRITTANY PAOLA",
+                "CAMACHO RODRIGUEZ LUZ MARIA",
+                "CASTILLO SARITAMA LUIS ALEXANDER",
+                "CRUZ VELASCO STEFANIE YULIANA",
+                "CUENCA CALVA YUSELLY DAYANNA",
+                "ESPINOZA AREVALO ERICKA DAYANNA",
+                "ESPINOZA CASTILLO JEFFERSON ROLANDO",
+                "GUARNIZO SARANGO XIOMARA PAULETTE",
+                "GUTIERREZ RAMON AXEL XAVIER",
+                "JARAMILLO MORALES XIMENA KAROLINA",
+                "JUMBO SARANGO JEFFERSON VICENTE",
+                "LIANG FAREZ BAO YU",
+                "MANZANO RAMIREZ GABRIELA ALEXANDRA",
+                "MASAPANTA FLORES VICTOR MANUEL",
+                "MAZA CHUYA EMILY GABRIELA",
+                "MEDINA SANCHEZ CRISTOPHER ADRIAN",
+                "MENDOZA MANZANO KEVIN MANUEL",
+                "NAZARENO NAZARENO ALEXANDRA NOEMI",
+                "ORDOÑEZ BELTRAN ANGELA EUNICE",
+                "REYES BEDOYA MARIA ISABEL",
+                "RODRIGUEZ ROMERO ELVIS DANIEL",
+                "ROMERO JIMENEZ GRACIELA MERCEDES",
+                "SANCHEZ ORDOÑEZ FELIX ADOLFO",
+                "SARANGO NARVAEZ DILAN JOSUE",
+                "VIVANCO SARITAMA JENNER ANDRY",
+                "ZUMBA ESPINOZA LUIS FERNANDO"
+            ];
+            
+            // Almacenamiento de notas
+            let studentNotes = {};
+            students.forEach((student, index) => {
+                studentNotes[index] = {
+                    notes: ["", "", "", "", "", "", "", "", "", ""],
+                    observations: ""
+                };
+            });
+            
+            // Cargar datos guardados si existen
+            if(localStorage.getItem('studentNotes')) {
+                studentNotes = JSON.parse(localStorage.getItem('studentNotes'));
+            }
+            
+            // Elementos del DOM
+            const studentSelect = document.getElementById('studentSelect');
+            const currentStudent = document.getElementById('currentStudent');
+            const noteInputs = Array.from({length: 10}, (_, i) => document.getElementById(`note${i+1}`));
+            const observationsInput = document.getElementById('observations');
+            const saveButton = document.getElementById('saveData');
+            const exportButton = document.getElementById('exportExcel');
+            
+            // Seleccionar estudiante
+            let currentStudentId = null;
+            
+            studentSelect.addEventListener('change', function() {
+                saveCurrentStudent();
+                
+                currentStudentId = parseInt(this.value);
+                const student = students[currentStudentId];
+                currentStudent.textContent = student;
+                
+                loadStudentData(currentStudentId);
+            });
+            
+            // Guardar datos del estudiante actual
+            function saveCurrentStudent() {
+                if(currentStudentId !== null) {
+                    studentNotes[currentStudentId].notes = noteInputs.map(input => input.value);
+                    studentNotes[currentStudentId].observations = observationsInput.value;
+                }
+            }
+            
+            // Cargar datos del estudiante
+            function loadStudentData(studentId) {
+                const notesData = studentNotes[studentId];
+                noteInputs.forEach((input, index) => {
+                    input.value = notesData.notes[index] || "";
+                });
+                observationsInput.value = notesData.observations || "";
+            }
+            
+            // Botón Guardar
+            saveButton.addEventListener('click', function() {
+                saveCurrentStudent();
+                localStorage.setItem('studentNotes', JSON.stringify(studentNotes));
+                alert('Datos guardados correctamente');
+            });
             
             // Exportar a Excel (optimizado para LibreOffice)
             exportButton.addEventListener('click', function() {
@@ -39,9 +421,9 @@
                 const wb = XLSX.utils.book_new();
                 const ws = XLSX.utils.aoa_to_sheet(data);
                 
-                // Ajustar anchos de columnas (MODIFICADO PARA COLUMNAS MÁS ANCHAS)
+                // Ajustar anchos de columnas (más anchas para nombres)
                 ws['!cols'] = [
-                    {wch: 40},  // Columna de estudiantes más ancha (antes era 30)
+                    {wch: 45},  // Columna de estudiantes (más ancha)
                     {wch: 6},   // 5to
                     {wch: 6},   // 6to
                     {wch: 6},   // 7mo
@@ -57,14 +439,17 @@
                 
                 XLSX.utils.book_append_sheet(wb, ws, "Notas");
                 
-                // Exportar con formato compatible con LibreOffice
-                XLSX.writeFile(wb, "notas_estudiantiles.xlsx", {
-                    bookType: 'xlsx',
-                    type: 'array'
-                });
+                // Exportar con formato compatible
+                XLSX.writeFile(wb, "notas_estudiantiles.xlsx");
             });
             
-            // Resto del código se mantiene igual
+            // Cargar primer estudiante por defecto
+            if(students.length > 0) {
+                studentSelect.value = "0";
+                currentStudentId = 0;
+                currentStudent.textContent = students[0];
+                loadStudentData(0);
+            }
         });
     </script>
 </body>
