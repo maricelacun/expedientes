@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Notas Estudiantiles</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <style>
         :root {
             --primary: #1565C0;
@@ -16,7 +14,6 @@
             --light: #E3F2FD;
             --dark: #0D47A1;
             --success: #4CAF50;
-            --warning: #FF9800;
             --danger: #F44336;
         }
         
@@ -54,17 +51,14 @@
             margin-bottom: 0.5rem;
         }
         
-        .subtitle {
-            font-weight: 300;
-            opacity: 0.9;
-        }
-        
         .controls {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
+            gap: 1rem;
             padding: 1rem 2rem;
             background-color: var(--light);
             border-bottom: 1px solid #BBDEFB;
+            flex-wrap: wrap;
         }
         
         .btn {
@@ -79,28 +73,14 @@
             gap: 0.5rem;
         }
         
-        .btn i {
-            font-size: 1.2rem;
-        }
-        
-        .btn-pdf {
-            background-color: var(--danger);
+        .btn-save {
+            background-color: var(--primary);
             color: white;
         }
         
         .btn-excel {
             background-color: var(--success);
             color: white;
-        }
-        
-        .btn-select {
-            background-color: var(--accent);
-            color: #212121;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
         
         .content {
@@ -125,15 +105,9 @@
             margin-bottom: 1rem;
         }
         
-        .student-list select:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-        
         .notes-container {
             flex: 1;
             padding: 1rem;
-            overflow-x: auto;
         }
         
         .notes-form {
@@ -177,37 +151,13 @@
             font-size: 1rem;
         }
         
-        .note-item input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.3);
-        }
-        
-        .observations {
-            margin-top: 1.5rem;
-        }
-        
-        .observations label {
-            display: block;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-            color: var(--dark);
-        }
-        
         .observations textarea {
             width: 100%;
             padding: 0.75rem;
             border: 1px solid #BBDEFB;
             border-radius: 6px;
-            font-size: 1rem;
             min-height: 100px;
             resize: vertical;
-        }
-        
-        .observations textarea:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.3);
         }
         
         .footer {
@@ -215,57 +165,35 @@
             padding: 1rem;
             background-color: var(--light);
             color: var(--dark);
-            font-size: 0.9rem;
         }
         
         @media (max-width: 768px) {
-            body {
-                padding: 0.5rem;
-            }
-            
-            .container {
-                border-radius: 10px;
-            }
-            
             .content {
                 flex-direction: column;
             }
-            
             .student-list {
                 width: 100%;
                 border-right: none;
-                border-bottom: 1px solid #BBDEFB;
             }
-            
             .notes-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
-        
-        /* Animaciones */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .animated {
-            animation: fadeIn 0.5s ease-out;
-        }
     </style>
 </head>
 <body>
-    <div class="container animated">
+    <div class="container">
         <header>
             <h1>Registro de Notas Estudiantiles</h1>
-            <p class="subtitle">Sistema de seguimiento académico - Año 2023</p>
+            <p>Sistema de seguimiento académico</p>
         </header>
         
         <div class="controls">
-            <button id="exportPdf" class="btn btn-pdf">
-                <i>📄</i> Exportar a PDF
+            <button id="saveData" class="btn btn-save">
+                💾 Guardar Datos
             </button>
             <button id="exportExcel" class="btn btn-excel">
-                <i>📊</i> Exportar a Excel
+                📊 Exportar a Excel
             </button>
         </div>
         
@@ -307,57 +235,49 @@
                     
                     <div class="notes-grid">
                         <div class="note-item">
-                            <label for="note1">Nota 1</label>
+                            <label>5to</label>
                             <input type="text" id="note1" placeholder="Ej. 8.5">
                         </div>
                         <div class="note-item">
-                            <label for="note2">Nota 2</label>
+                            <label>6to</label>
                             <input type="text" id="note2" placeholder="Ej. 7.25">
                         </div>
                         <div class="note-item">
-                            <label for="note3">Nota 3</label>
+                            <label>7mo</label>
                             <input type="text" id="note3" placeholder="Ej. 9.0">
                         </div>
                         <div class="note-item">
-                            <label for="note4">Nota 4</label>
+                            <label>8vo</label>
                             <input type="text" id="note4" placeholder="Ej. 8.75">
                         </div>
                         <div class="note-item">
-                            <label for="note5">Nota 5</label>
+                            <label>9no</label>
                             <input type="text" id="note5" placeholder="Ej. 10.0">
                         </div>
                         <div class="note-item">
-                            <label for="note6">Nota 6</label>
+                            <label>10mo</label>
                             <input type="text" id="note6" placeholder="Ej. 7.8">
                         </div>
                         <div class="note-item">
-                            <label for="note7">Nota 7</label>
+                            <label>1ero</label>
                             <input type="text" id="note7" placeholder="Ej. 8.37">
                         </div>
                         <div class="note-item">
-                            <label for="note8">Nota 8</label>
+                            <label>2do</label>
                             <input type="text" id="note8" placeholder="Ej. 9.5">
                         </div>
                         <div class="note-item">
-                            <label for="note9">Nota 9</label>
+                            <label>3ero</label>
                             <input type="text" id="note9" placeholder="Ej. 7.0">
                         </div>
                         <div class="note-item">
-                            <label for="note10">Nota 10</label>
+                            <label>PPE</label>
                             <input type="text" id="note10" placeholder="Ej. 8.9">
-                        </div>
-                        <div class="note-item">
-                            <label for="note11">Nota 11</label>
-                            <input type="text" id="note11" placeholder="Ej. 9.25">
-                        </div>
-                        <div class="note-item">
-                            <label for="note12">Nota 12</label>
-                            <input type="text" id="note12" placeholder="Ej. 10.0">
                         </div>
                     </div>
                     
                     <div class="observations">
-                        <label for="observations">Observaciones</label>
+                        <label>Observación</label>
                         <textarea id="observations" placeholder="Escriba aquí sus observaciones..."></textarea>
                     </div>
                 </div>
@@ -365,13 +285,13 @@
         </div>
         
         <div class="footer">
-            Sistema de registro académico © 2023 | Desarrollado con ❤️ para la educación
+            Sistema de registro académico © 2023
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Datos de estudiantes y notas
+            // Datos de estudiantes
             const students = [
                 "AGILA GUTIERREZ BRITTANY PAOLA",
                 "CAMACHO RODRIGUEZ LUZ MARIA",
@@ -405,118 +325,106 @@
             let studentNotes = {};
             students.forEach((student, index) => {
                 studentNotes[index] = {
-                    notes: ["", "", "", "", "", "", "", "", "", "", "", ""],
+                    notes: ["", "", "", "", "", "", "", "", "", ""],
                     observations: ""
                 };
             });
             
+            // Cargar datos guardados si existen
+            if(localStorage.getItem('studentNotes')) {
+                studentNotes = JSON.parse(localStorage.getItem('studentNotes'));
+            }
+            
             // Elementos del DOM
             const studentSelect = document.getElementById('studentSelect');
             const currentStudent = document.getElementById('currentStudent');
-            const noteInputs = Array.from({length: 12}, (_, i) => document.getElementById(`note${i+1}`));
+            const noteInputs = Array.from({length: 10}, (_, i) => document.getElementById(`note${i+1}`));
             const observationsInput = document.getElementById('observations');
+            const saveButton = document.getElementById('saveData');
+            const exportButton = document.getElementById('exportExcel');
             
             // Seleccionar estudiante
             let currentStudentId = null;
             
             studentSelect.addEventListener('change', function() {
-                if (currentStudentId !== null) {
-                    // Guardar notas del estudiante actual antes de cambiar
-                    studentNotes[currentStudentId].notes = noteInputs.map(input => input.value);
-                    studentNotes[currentStudentId].observations = observationsInput.value;
-                }
+                saveCurrentStudent();
                 
-                // Cargar nuevo estudiante
                 currentStudentId = parseInt(this.value);
                 const student = students[currentStudentId];
                 currentStudent.textContent = student;
                 
-                // Cargar notas
-                const notesData = studentNotes[currentStudentId];
+                loadStudentData(currentStudentId);
+            });
+            
+            // Guardar datos del estudiante actual
+            function saveCurrentStudent() {
+                if(currentStudentId !== null) {
+                    studentNotes[currentStudentId].notes = noteInputs.map(input => input.value);
+                    studentNotes[currentStudentId].observations = observationsInput.value;
+                }
+            }
+            
+            // Cargar datos del estudiante
+            function loadStudentData(studentId) {
+                const notesData = studentNotes[studentId];
                 noteInputs.forEach((input, index) => {
                     input.value = notesData.notes[index] || "";
                 });
                 observationsInput.value = notesData.observations || "";
+            }
+            
+            // Botón Guardar
+            saveButton.addEventListener('click', function() {
+                saveCurrentStudent();
+                localStorage.setItem('studentNotes', JSON.stringify(studentNotes));
+                alert('Datos guardados correctamente');
             });
             
-            // Exportar a PDF
-            document.getElementById('exportPdf').addEventListener('click', function() {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
+            // Exportar a Excel (optimizado para LibreOffice)
+            exportButton.addEventListener('click', function() {
+                saveCurrentStudent();
                 
-                // Título
-                doc.setFontSize(18);
-                doc.setTextColor(21, 101, 192);
-                doc.text('Registro de Notas Estudiantiles', 105, 15, { align: 'center' });
-                doc.setFontSize(12);
-                doc.setTextColor(0, 0, 0);
-                doc.text('Año Académico 2023', 105, 22, { align: 'center' });
+                // Preparar datos
+                const data = [
+                    ["Estudiante", "5to", "6to", "7mo", "8vo", "9no", "10mo", "1ero", "2do", "3ero", "PPE", "Observación"]
+                ];
                 
-                // Encabezados
-                const headers = ["Estudiante", "N1", "N2", "N3", "N4", "N5", "N6", "N7", "N8", "N9", "N10", "N11", "N12", "Observaciones"];
-                
-                // Filas
-                const rows = [];
                 students.forEach((student, index) => {
                     const notesData = studentNotes[index];
-                    rows.push([
+                    data.push([
                         student,
                         ...notesData.notes,
                         notesData.observations
                     ]);
                 });
                 
-                // Generar tabla en PDF
-                doc.autoTable({
-                    head: [headers],
-                    body: rows,
-                    startY: 30,
-                    styles: {
-                        fontSize: 8,
-                        cellPadding: 2,
-                        overflow: 'linebreak'
-                    },
-                    headStyles: {
-                        fillColor: [21, 101, 192],
-                        textColor: 255
-                    },
-                    alternateRowStyles: {
-                        fillColor: [227, 242, 253]
-                    },
-                    columnStyles: {
-                        0: { cellWidth: 40 },
-                        13: { cellWidth: 40 }
-                    },
-                    margin: { top: 30 }
-                });
-                
-                // Guardar PDF
-                doc.save('notas_estudiantiles.pdf');
-            });
-            
-            // Exportar a Excel
-            document.getElementById('exportExcel').addEventListener('click', function() {
+                // Crear libro de Excel
                 const wb = XLSX.utils.book_new();
-                const wsData = [];
+                const ws = XLSX.utils.aoa_to_sheet(data);
                 
-                // Encabezados
-                const headers = ["Estudiante", "5to", "6to", "7mo", "8vo", "9no", "10mo", "1eroB", "2doB", "3eroB", "PPE", "N11", "N12", "Observaciones"];
-                wsData.push(headers);
+                // Ajustar anchos de columnas
+                ws['!cols'] = [
+                    {wch: 30}, {wch: 5}, {wch: 5}, {wch: 5}, {wch: 5},
+                    {wch: 5}, {wch: 5}, {wch: 5}, {wch: 5}, {wch: 5},
+                    {wch: 5}, {wch: 30}
+                ];
                 
-                // Filas
-                students.forEach((student, index) => {
-                    const notesData = studentNotes[index];
-                    wsData.push([
-                        student,
-                        ...notesData.notes,
-                        notesData.observations
-                    ]);
+                XLSX.utils.book_append_sheet(wb, ws, "Notas");
+                
+                // Exportar con formato compatible con LibreOffice
+                XLSX.writeFile(wb, "notas_estudiantiles.xlsx", {
+                    bookType: 'xlsx',
+                    type: 'array'
                 });
-                
-                const ws = XLSX.utils.aoa_to_sheet(wsData);
-                XLSX.utils.book_append_sheet(wb, ws, "Notas Estudiantiles");
-                XLSX.writeFile(wb, "notas_estudiantiles.xlsx");
             });
+            
+            // Cargar primer estudiante por defecto
+            if(students.length > 0) {
+                studentSelect.value = "0";
+                currentStudentId = 0;
+                currentStudent.textContent = students[0];
+                loadStudentData(0);
+            }
         });
     </script>
 </body>
