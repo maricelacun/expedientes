@@ -10,14 +10,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <style>
         :root {
-            --primary: #6c5ce7;
-            --secondary: #a29bfe;
-            --accent: #fd79a8;
-            --light: #f8f9fa;
-            --dark: #343a40;
-            --success: #00b894;
-            --warning: #fdcb6e;
-            --danger: #d63031;
+            --primary: #1565C0;
+            --secondary: #2196F3;
+            --accent: #FFC107;
+            --light: #E3F2FD;
+            --dark: #0D47A1;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --danger: #F44336;
         }
         
         * {
@@ -28,7 +28,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
             min-height: 100vh;
             padding: 2rem;
         }
@@ -64,7 +64,7 @@
             justify-content: space-between;
             padding: 1rem 2rem;
             background-color: var(--light);
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #BBDEFB;
         }
         
         .btn {
@@ -93,59 +93,121 @@
             color: white;
         }
         
+        .btn-select {
+            background-color: var(--accent);
+            color: #212121;
+        }
+        
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
         
-        .table-container {
+        .content {
+            display: flex;
+            min-height: 500px;
+        }
+        
+        .student-list {
+            width: 300px;
+            background-color: var(--light);
+            padding: 1rem;
+            border-right: 1px solid #BBDEFB;
+        }
+        
+        .student-list select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--secondary);
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: white;
+            margin-bottom: 1rem;
+        }
+        
+        .student-list select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        .notes-container {
+            flex: 1;
             padding: 1rem;
             overflow-x: auto;
         }
         
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 1rem;
+        .notes-form {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
         
-        th, td {
-            padding: 0.75rem;
-            text-align: left;
-            border-bottom: 1px solid #eee;
+        .student-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--accent);
         }
         
-        th {
-            background-color: var(--primary);
-            color: white;
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .note-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .note-item label {
             font-weight: 500;
-            position: sticky;
-            top: 0;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
         }
         
-        tr:nth-child(even) {
-            background-color: #f8f9fa;
+        .note-item input {
+            padding: 0.75rem;
+            border: 1px solid #BBDEFB;
+            border-radius: 6px;
+            font-size: 1rem;
         }
         
-        tr:hover {
-            background-color: #e9ecef;
+        .note-item input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.3);
         }
         
-        input[type="text"], input[type="number"] {
+        .observations {
+            margin-top: 1.5rem;
+        }
+        
+        .observations label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .observations textarea {
             width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 0.9rem;
+            padding: 0.75rem;
+            border: 1px solid #BBDEFB;
+            border-radius: 6px;
+            font-size: 1rem;
+            min-height: 100px;
+            resize: vertical;
         }
         
-        input[type="number"] {
-            max-width: 80px;
-            text-align: center;
-        }
-        
-        .observaciones {
-            min-width: 200px;
+        .observations textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.3);
         }
         
         .footer {
@@ -165,9 +227,18 @@
                 border-radius: 10px;
             }
             
-            th, td {
-                padding: 0.5rem;
-                font-size: 0.8rem;
+            .content {
+                flex-direction: column;
+            }
+            
+            .student-list {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #BBDEFB;
+            }
+            
+            .notes-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
         
@@ -190,73 +261,107 @@
         </header>
         
         <div class="controls">
-            <div>
-                <button id="exportPdf" class="btn btn-pdf">
-                    <i>📄</i> Exportar a PDF
-                </button>
-                <button id="exportExcel" class="btn btn-excel">
-                    <i>📊</i> Exportar a Excel
-                </button>
-            </div>
+            <button id="exportPdf" class="btn btn-pdf">
+                <i>📄</i> Exportar a PDF
+            </button>
+            <button id="exportExcel" class="btn btn-excel">
+                <i>📊</i> Exportar a Excel
+            </button>
         </div>
         
-        <div class="table-container">
-            <table id="notasTable">
-                <thead>
-                    <tr>
-                        <th>Estudiante</th>
-                        <th>N1</th>
-                        <th>N2</th>
-                        <th>N3</th>
-                        <th>N4</th>
-                        <th>N5</th>
-                        <th>N6</th>
-                        <th>N7</th>
-                        <th>N8</th>
-                        <th>N9</th>
-                        <th>N10</th>
-                        <th>N11</th>
-                        <th>N12</th>
-                        <th class="observaciones">Observaciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>AGILA GUTIERREZ BRITTANY PAOLA</td>
-                        <td><input type="number" min="0" max="10" step="0.01" placeholder="0-10"></td>
-                        <td><input type="number" min="0" max="10" step="0.01" placeholder="0-10"></td>
-                        <td><input type="number" min="0" max="10" step="0.01" placeholder="0-10"></td>
-                        <td><input type="number" min="0" max="10" step="0.01" placeholder="0-10"></td>
-                        <td><input type="number" min="0" max="10" step="0.01" placeholder="0-10"></td>
-                        <td><input type="number" min="0" max="10" step="0.01" placeholder="0-10"></td>
-                        <td><input type="number" min="0" max="10" step="0.01" placeholder="0-10"></td>
-                        <td><input type="number" min="0" max="10" step="0.01" placeholder="0-10"></td>
-                        <td><input type="number" min="0" max="10" step="0.01" placeholder="0-10"></td>
-                        <td><input type="number" min="0" max="10" step="0.01" placeholder="0-10"></td>
-                        <td><input type="number" min="0" max="10" step="0.01" placeholder="0-10"></td>
-                        <td><input type="number" min="0" max="10" step="0.01" placeholder="0-10"></td>
-                        <td><input type="text" class="observaciones" placeholder="Escriba aquí"></td>
-                    </tr>
-                    <!-- Resto de estudiantes con los mismos inputs -->
-                    <tr>
-                        <td>CAMACHO RODRIGUEZ LUZ MARIA</td>
-                        <td><input type="number" min="0" max="10" step="0.01" placeholder="0-10"></td>
-                        <td><input type="number" min="0" max="10" step="0.01" placeholder="0-10"></td>
-                        <td><input type="number" min="0" max="10" step="0.01" placeholder="0-10"></td>
-                        <td><input type="number" min="0" max="10" step="0.01" placeholder="0-10"></td>
-                        <td><input type="number" min="0" max="10" step="0.01" placeholder="0-10"></td>
-                        <td><input type="number" min="0" max="10" step="0.01" placeholder="0-10"></td>
-                        <td><input type="number" min="0" max="10" step="0.01" placeholder="0-10"></td>
-                        <td><input type="number" min="0" max="10" step="0.01" placeholder="0-10"></td>
-                        <td><input type="number" min="0" max="10" step="0.01" placeholder="0-10"></td>
-                        <td><input type="number" min="0" max="10" step="0.01" placeholder="0-10"></td>
-                        <td><input type="number" min="0" max="10" step="0.01" placeholder="0-10"></td>
-                        <td><input type="number" min="0" max="10" step="0.01" placeholder="0-10"></td>
-                        <td><input type="text" class="observaciones" placeholder="Escriba aquí"></td>
-                    </tr>
-                    <!-- Todos los demás estudiantes con la misma estructura -->
-                </tbody>
-            </table>
+        <div class="content">
+            <div class="student-list">
+                <select id="studentSelect" size="20">
+                    <option value="0">AGILA GUTIERREZ BRITTANY PAOLA</option>
+                    <option value="1">CAMACHO RODRIGUEZ LUZ MARIA</option>
+                    <option value="2">CASTILLO SARITAMA LUIS ALEXANDER</option>
+                    <option value="3">CRUZ VELASCO STEFANIE YULIANA</option>
+                    <option value="4">CUENCA CALVA YUSELLY DAYANNA</option>
+                    <option value="5">ESPINOZA AREVALO ERICKA DAYANNA</option>
+                    <option value="6">ESPINOZA CASTILLO JEFFERSON ROLANDO</option>
+                    <option value="7">GUARNIZO SARANGO XIOMARA PAULETTE</option>
+                    <option value="8">GUTIERREZ RAMON AXEL XAVIER</option>
+                    <option value="9">JARAMILLO MORALES XIMENA KAROLINA</option>
+                    <option value="10">JUMBO SARANGO JEFFERSON VICENTE</option>
+                    <option value="11">LIANG FAREZ BAO YU</option>
+                    <option value="12">MANZANO RAMIREZ GABRIELA ALEXANDRA</option>
+                    <option value="13">MASAPANTA FLORES VICTOR MANUEL</option>
+                    <option value="14">MAZA CHUYA EMILY GABRIELA</option>
+                    <option value="15">MEDINA SANCHEZ CRISTOPHER ADRIAN</option>
+                    <option value="16">MENDOZA MANZANO KEVIN MANUEL</option>
+                    <option value="17">NAZARENO NAZARENO ALEXANDRA NOEMI</option>
+                    <option value="18">ORDOÑEZ BELTRAN ANGELA EUNICE</option>
+                    <option value="19">REYES BEDOYA MARIA ISABEL</option>
+                    <option value="20">RODRIGUEZ ROMERO ELVIS DANIEL</option>
+                    <option value="21">ROMERO JIMENEZ GRACIELA MERCEDES</option>
+                    <option value="22">SANCHEZ ORDOÑEZ FELIX ADOLFO</option>
+                    <option value="23">SARANGO NARVAEZ DILAN JOSUE</option>
+                    <option value="24">VIVANCO SARITAMA JENNER ANDRY</option>
+                    <option value="25">ZUMBA ESPINOZA LUIS FERNANDO</option>
+                </select>
+            </div>
+            
+            <div class="notes-container">
+                <div class="notes-form">
+                    <div class="student-name" id="currentStudent">Seleccione un estudiante</div>
+                    
+                    <div class="notes-grid">
+                        <div class="note-item">
+                            <label for="note1">Nota 1</label>
+                            <input type="text" id="note1" placeholder="Ej. 8.5">
+                        </div>
+                        <div class="note-item">
+                            <label for="note2">Nota 2</label>
+                            <input type="text" id="note2" placeholder="Ej. 7.25">
+                        </div>
+                        <div class="note-item">
+                            <label for="note3">Nota 3</label>
+                            <input type="text" id="note3" placeholder="Ej. 9.0">
+                        </div>
+                        <div class="note-item">
+                            <label for="note4">Nota 4</label>
+                            <input type="text" id="note4" placeholder="Ej. 8.75">
+                        </div>
+                        <div class="note-item">
+                            <label for="note5">Nota 5</label>
+                            <input type="text" id="note5" placeholder="Ej. 10.0">
+                        </div>
+                        <div class="note-item">
+                            <label for="note6">Nota 6</label>
+                            <input type="text" id="note6" placeholder="Ej. 7.8">
+                        </div>
+                        <div class="note-item">
+                            <label for="note7">Nota 7</label>
+                            <input type="text" id="note7" placeholder="Ej. 8.37">
+                        </div>
+                        <div class="note-item">
+                            <label for="note8">Nota 8</label>
+                            <input type="text" id="note8" placeholder="Ej. 9.5">
+                        </div>
+                        <div class="note-item">
+                            <label for="note9">Nota 9</label>
+                            <input type="text" id="note9" placeholder="Ej. 7.0">
+                        </div>
+                        <div class="note-item">
+                            <label for="note10">Nota 10</label>
+                            <input type="text" id="note10" placeholder="Ej. 8.9">
+                        </div>
+                        <div class="note-item">
+                            <label for="note11">Nota 11</label>
+                            <input type="text" id="note11" placeholder="Ej. 9.25">
+                        </div>
+                        <div class="note-item">
+                            <label for="note12">Nota 12</label>
+                            <input type="text" id="note12" placeholder="Ej. 10.0">
+                        </div>
+                    </div>
+                    
+                    <div class="observations">
+                        <label for="observations">Observaciones</label>
+                        <textarea id="observations" placeholder="Escriba aquí sus observaciones..."></textarea>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <div class="footer">
@@ -266,6 +371,74 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Datos de estudiantes y notas
+            const students = [
+                "AGILA GUTIERREZ BRITTANY PAOLA",
+                "CAMACHO RODRIGUEZ LUZ MARIA",
+                "CASTILLO SARITAMA LUIS ALEXANDER",
+                "CRUZ VELASCO STEFANIE YULIANA",
+                "CUENCA CALVA YUSELLY DAYANNA",
+                "ESPINOZA AREVALO ERICKA DAYANNA",
+                "ESPINOZA CASTILLO JEFFERSON ROLANDO",
+                "GUARNIZO SARANGO XIOMARA PAULETTE",
+                "GUTIERREZ RAMON AXEL XAVIER",
+                "JARAMILLO MORALES XIMENA KAROLINA",
+                "JUMBO SARANGO JEFFERSON VICENTE",
+                "LIANG FAREZ BAO YU",
+                "MANZANO RAMIREZ GABRIELA ALEXANDRA",
+                "MASAPANTA FLORES VICTOR MANUEL",
+                "MAZA CHUYA EMILY GABRIELA",
+                "MEDINA SANCHEZ CRISTOPHER ADRIAN",
+                "MENDOZA MANZANO KEVIN MANUEL",
+                "NAZARENO NAZARENO ALEXANDRA NOEMI",
+                "ORDOÑEZ BELTRAN ANGELA EUNICE",
+                "REYES BEDOYA MARIA ISABEL",
+                "RODRIGUEZ ROMERO ELVIS DANIEL",
+                "ROMERO JIMENEZ GRACIELA MERCEDES",
+                "SANCHEZ ORDOÑEZ FELIX ADOLFO",
+                "SARANGO NARVAEZ DILAN JOSUE",
+                "VIVANCO SARITAMA JENNER ANDRY",
+                "ZUMBA ESPINOZA LUIS FERNANDO"
+            ];
+            
+            // Almacenamiento de notas
+            let studentNotes = {};
+            students.forEach((student, index) => {
+                studentNotes[index] = {
+                    notes: ["", "", "", "", "", "", "", "", "", "", "", ""],
+                    observations: ""
+                };
+            });
+            
+            // Elementos del DOM
+            const studentSelect = document.getElementById('studentSelect');
+            const currentStudent = document.getElementById('currentStudent');
+            const noteInputs = Array.from({length: 12}, (_, i) => document.getElementById(`note${i+1}`));
+            const observationsInput = document.getElementById('observations');
+            
+            // Seleccionar estudiante
+            let currentStudentId = null;
+            
+            studentSelect.addEventListener('change', function() {
+                if (currentStudentId !== null) {
+                    // Guardar notas del estudiante actual antes de cambiar
+                    studentNotes[currentStudentId].notes = noteInputs.map(input => input.value);
+                    studentNotes[currentStudentId].observations = observationsInput.value;
+                }
+                
+                // Cargar nuevo estudiante
+                currentStudentId = parseInt(this.value);
+                const student = students[currentStudentId];
+                currentStudent.textContent = student;
+                
+                // Cargar notas
+                const notesData = studentNotes[currentStudentId];
+                noteInputs.forEach((input, index) => {
+                    input.value = notesData.notes[index] || "";
+                });
+                observationsInput.value = notesData.observations || "";
+            });
+            
             // Exportar a PDF
             document.getElementById('exportPdf').addEventListener('click', function() {
                 const { jsPDF } = window.jspdf;
@@ -273,31 +446,24 @@
                 
                 // Título
                 doc.setFontSize(18);
+                doc.setTextColor(21, 101, 192);
                 doc.text('Registro de Notas Estudiantiles', 105, 15, { align: 'center' });
                 doc.setFontSize(12);
+                doc.setTextColor(0, 0, 0);
                 doc.text('Año Académico 2023', 105, 22, { align: 'center' });
                 
-                // Obtener datos de la tabla
-                const headers = [];
-                const rows = [];
-                
                 // Encabezados
-                document.querySelectorAll('#notasTable thead th').forEach(th => {
-                    headers.push(th.textContent);
-                });
+                const headers = ["Estudiante", "N1", "N2", "N3", "N4", "N5", "N6", "N7", "N8", "N9", "N10", "N11", "N12", "Observaciones"];
                 
                 // Filas
-                document.querySelectorAll('#notasTable tbody tr').forEach(tr => {
-                    const row = [];
-                    tr.querySelectorAll('td').forEach((td, index) => {
-                        if (index === 0) {
-                            row.push(td.textContent);
-                        } else {
-                            const input = td.querySelector('input');
-                            row.push(input ? input.value : '');
-                        }
-                    });
-                    rows.push(row);
+                const rows = [];
+                students.forEach((student, index) => {
+                    const notesData = studentNotes[index];
+                    rows.push([
+                        student,
+                        ...notesData.notes,
+                        notesData.observations
+                    ]);
                 });
                 
                 // Generar tabla en PDF
@@ -310,8 +476,15 @@
                         cellPadding: 2,
                         overflow: 'linebreak'
                     },
+                    headStyles: {
+                        fillColor: [21, 101, 192],
+                        textColor: 255
+                    },
+                    alternateRowStyles: {
+                        fillColor: [227, 242, 253]
+                    },
                     columnStyles: {
-                        0: { cellWidth: 50 },
+                        0: { cellWidth: 40 },
                         13: { cellWidth: 40 }
                     },
                     margin: { top: 30 }
@@ -327,44 +500,22 @@
                 const wsData = [];
                 
                 // Encabezados
-                const headers = [];
-                document.querySelectorAll('#notasTable thead th').forEach(th => {
-                    headers.push(th.textContent);
-                });
+                const headers = ["Estudiante", "5to", "6to", "7mo", "8vo", "9no", "10mo", "1eroB", "2doB", "3eroB", "PPE", "N11", "N12", "Observaciones"];
                 wsData.push(headers);
                 
                 // Filas
-                document.querySelectorAll('#notasTable tbody tr').forEach(tr => {
-                    const row = [];
-                    tr.querySelectorAll('td').forEach((td, index) => {
-                        if (index === 0) {
-                            row.push(td.textContent);
-                        } else {
-                            const input = td.querySelector('input');
-                            row.push(input ? input.value : '');
-                        }
-                    });
-                    wsData.push(row);
+                students.forEach((student, index) => {
+                    const notesData = studentNotes[index];
+                    wsData.push([
+                        student,
+                        ...notesData.notes,
+                        notesData.observations
+                    ]);
                 });
                 
                 const ws = XLSX.utils.aoa_to_sheet(wsData);
                 XLSX.utils.book_append_sheet(wb, ws, "Notas Estudiantiles");
                 XLSX.writeFile(wb, "notas_estudiantiles.xlsx");
-            });
-
-            // Permitir copiar y pegar en los inputs de notas
-            document.querySelectorAll('input[type="number"]').forEach(input => {
-                input.addEventListener('paste', function(e) {
-                    const pasteData = e.clipboardData.getData('text');
-                    if (/^\d*\.?\d*$/.test(pasteData)) {
-                        const value = parseFloat(pasteData);
-                        if (value >= 0 && value <= 10) {
-                            setTimeout(() => {
-                                this.value = value;
-                            }, 10);
-                        }
-                    }
-                });
             });
         });
     </script>
